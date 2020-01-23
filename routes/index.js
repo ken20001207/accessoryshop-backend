@@ -167,6 +167,7 @@ router.post('/sendorder', async function (req, res) {
   let orderData = await generateOrderData(req.body);
 
   let base_param = {
+    ClientBackURL: 'http://localhost:8080/order/' + orderID,
     MerchantTradeNo: orderID.toString(),
     MerchantTradeDate: time.toString(),
     TotalAmount: orderData.sumprice.toString(),
@@ -208,6 +209,14 @@ router.get('/order/:id', function (req, res) {
   });
 
 });
+
+// 收到付款完成的通知
+router.post('/paycomplete', function (req, res) {
+  console.log("收到訂單付款完成的通知!");
+  console.log(req.body);
+  res.status(200).write(("1|OK").toString());
+  res.end();
+})
 
 /** 更新訂單寄送資訊 */
 function updateDelivery(id, delivery, delivery_info) {
