@@ -167,9 +167,9 @@ router.post('/sendorder', async function (req, res) {
   let orderData = await generateOrderData(req.body);
 
   let base_param = {
-    MerchantTradeNo: orderID.toString(),
-    MerchantTradeDate: time,
-    TotalAmount: orderData.sumprice,
+    MerchantTradeNo: 'f0a0d7e9fae1bb72bc93',
+    MerchantTradeDate: '2017/02/13 15:45:30',
+    TotalAmount: '100',
     TradeDesc: '商品描述',
     ItemName: '飾品',
     ReturnURL: 'http://sgp.vt.linyuanlin.com:3000/paycomplete'
