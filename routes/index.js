@@ -170,7 +170,7 @@ router.post('/sendorder', async function (req, res) {
     MerchantTradeNo: orderID.toString(),
     MerchantTradeDate: time,
     TotalAmount: orderData.sumprice,
-    TradeDesc: '交易編號 ' + orderID,
+    TradeDesc: '商品描述',
     ItemName: '飾品',
     ReturnURL: 'http://sgp.vt.linyuanlin.com:3000/paycomplete'
   };
