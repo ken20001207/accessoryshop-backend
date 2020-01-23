@@ -172,8 +172,7 @@ router.post('/sendorder', async function (req, res) {
     TotalAmount: orderData.sumprice,
     TradeDesc: '交易編號 ' + orderID,
     ItemName: '飾品',
-    ReturnURL: 'http://localhost:8080/order/' + orderID,
-    EncryptType: '1'
+    ReturnURL: 'http://sgp.vt.linyuanlin.com:3000/paycomplete'
   };
 
   let create = new ecpay_payment();
