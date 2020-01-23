@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('accessoryshop-b:server');
 var http = require('http');
+var fs = require('fs');
 
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/sgp.vt.linyuanlin.com/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/sgp.vt.linyuanlin.com/fullchain.pem', 'utf8');
