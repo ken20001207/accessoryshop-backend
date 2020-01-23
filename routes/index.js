@@ -1,8 +1,30 @@
+// 設定檔
+const config = {
+  flagclass: 1,
+  deliveryWay: [
+    {
+      name: "全家超商取貨",
+      price: 40
+    }, {
+      name: "統一超商取貨",
+      price: 40
+    }, {
+      name: "黑貓宅急便",
+      price: 80
+    }, {
+      name: "中華郵政",
+      price: 60
+    },
+  ]
+};
+
+// 需求文件
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var ecpay_payment = require('ECPAY_Payment_node_js');
 
+// 資料庫連線資訊
 var connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -14,15 +36,15 @@ connection.connect();
 
 // 取得當前的主打商品類別
 router.get('/flagclass', function (req, res) {
-  connection.query('SELECT * FROM `data`', function (error, results) {
-
-    if (error) throw error;
-
-    res.status(200).write((results[0].flagclass).toString());
-    res.end();
-  });
-
+  res.status(200).write((config.flagclass).toString());
+  res.end();
 });
+
+// 取得當前可用的寄送方式
+router.get('/deliveryWay', function (req, res) {
+  res.status(200).send(config.deliveryWay);
+  res.end();
+})
 
 // 請求特定類別的商品
 router.get('/itemsbyclass/:class', function (req, res) {
@@ -102,9 +124,11 @@ function getItemPrice(id) {
 
 /** 用購物車資料生成訂單資料 */
 function generateOrderData(shoppingCartData) {
-  return new Promise(async function (resolve, reject) {
+  return new Promise(async function (resolve) {
     var orderData = [];
     var sumprice = 0;
+
+    // 檢查每一個商品的當前價格並加總
     for (var i = 0; i < shoppingCartData.items.length; i++) {
       var item = shoppingCartData.items[i];
       let price = await getItemPrice(item.id);
@@ -113,6 +137,16 @@ function generateOrderData(shoppingCartData) {
       sumprice += item.price * item.num;
       orderData.push(item);
     }
+
+    // 找到運費並加入總金額
+    for (i = 0; i < config.deliveryWay.length; i++) {
+      if (config.deliveryWay[i].name == shoppingCartData.delivery.way) {
+        console.log("運送方式為 " + config.deliveryWay[i].name + " 需要運費 " + config.deliveryWay[i].price + " 元");
+        sumprice += config.deliveryWay[i].price;
+        break;
+      }
+    }
+
     resolve({ orderData: orderData, sumprice: sumprice });
   })
 }
@@ -130,13 +164,9 @@ router.post('/sendorder', async function (req, res) {
   // 構造訂單資料
   let orderData = await generateOrderData(req.body);
 
-  // 上傳到資料庫
-  connection.query('INSERT INTO `orders` (`id`,`data`,`sumprice`) VALUES (\'' + orderID + '\' , \'' + JSON.stringify(orderData.orderData) + '\', \'' + orderData.sumprice + '\');', function (error, results) {
-  });
-
   let base_param = {
     MerchantTradeNo: 'f0a0d7e9fae1bb72bc93', //請帶20碼uid, ex: f0a0d7e9fae1bb72bc93
-    MerchantTradeDate: Date.now(), //ex: 2017/02/13 15:45:30
+    MerchantTradeDate: '2017/02/13 15:45:30', //ex: 2017/02/13 15:45:30
     TotalAmount: orderData.sumprice,
     TradeDesc: '測試交易描述',
     ItemName: '測試商品等',
@@ -144,37 +174,15 @@ router.post('/sendorder', async function (req, res) {
     EncryptType: '1'
   };
 
-  let inv_params = { /*
-     RelateNumber: 'SJDFJGH24FJIL97G73653XM0VOMS4K',  //請帶30碼uid ex: SJDFJGH24FJIL97G73653XM0VOMS4K
-     CustomerID: '',  //會員編號
-     CustomerIdentifier: '',   //統一編號
-     CustomerName: '測試買家',
-     CustomerAddr: '測試用地址',
-     CustomerPhone: '0123456789',
-     CustomerEmail: 'johndoe@test.com',
-     ClearanceMark: '2',
-     TaxType: '1',
-     CarruerType: '',
-     CarruerNum: '',
-     Donation: '2',
-     LoveCode: '',
-     Print: '1',
-     InvoiceItemName: '測試商品1|測試商品2',
-     InvoiceItemCount: '2|3',
-     InvoiceItemWord: '個|包',
-     InvoiceItemPrice: '35|10',
-     InvoiceItemTaxType: '1|1',
-     InvoiceRemark: '測試商品1的說明|測試商品2的說明',
-     DelayDay: '0',
-     InvType: '07' */
-};
-
   let create = new ecpay_payment();
-  let htm = create.payment_client.aio_check_out_all(parameters = base_param, invoice = inv_params);
-  console.log(htm);
+  let htm = await create.payment_client.aio_check_out_all(parameters = base_param, invoice = {});
+
+  // 上傳到資料庫
+  connection.query('INSERT INTO `orders` (`id`,`data`,`sumprice`,`statusCode`,`delivery`,`payform`) VALUES (\'' + orderID + '\' , \'' + JSON.stringify(orderData.orderData) + '\', \'' + orderData.sumprice + '\',1,\'' + JSON.stringify(req.body.delivery) + '\',\'' + htm +'\');', function (error, results) {
+  });
 
   res.status(200);
-  res.write(orderID.toString());
+  res.send({ orderID: orderID.toString(), payform: htm });
   res.end();
 })
 
