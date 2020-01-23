@@ -221,7 +221,7 @@ function updatePayResult(id, result) {
 }
 
 // 收到付款完成的通知
-router.post('/paycomplete', function (req, res) {
+router.post('/paycomplete', async function (req, res) {
   console.log("收到訂單付款完成的通知!");
   console.log("訂單編號 " + req.body.MerchantTradeNo + " 狀態更新為 " + req.body.RtnMsg);
   await updatePayResult(req.body.MerchantTradeNo, req.body.RtnMsg);
