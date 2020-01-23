@@ -150,7 +150,7 @@ function generateOrderData(shoppingCartData) {
     resolve({ orderData: orderData, sumprice: sumprice });
   })
 }
-
+var dateFormat = require('dateformat');
 // 產生訂單
 router.post('/sendorder', async function (req, res) {
 
@@ -165,11 +165,11 @@ router.post('/sendorder', async function (req, res) {
   let orderData = await generateOrderData(req.body);
 
   let base_param = {
-    MerchantTradeNo: 'f0a0d7e9fae1bb72bc93', //請帶20碼uid, ex: f0a0d7e9fae1bb72bc93
-    MerchantTradeDate: '2017/02/13 15:45:30', //ex: 2017/02/13 15:45:30
+    MerchantTradeNo: orderID,
+    MerchantTradeDate: dateFormat(new Date(), "yyyy/mm/dd h:MM:ss"),
     TotalAmount: orderData.sumprice,
-    TradeDesc: '測試交易描述',
-    ItemName: '測試商品等',
+    TradeDesc: '交易編號 ' + orderID,
+    ItemName: '飾品',
     ReturnURL: 'http://localhost:8080/order/' + orderID,
     EncryptType: '1'
   };
