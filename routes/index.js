@@ -154,7 +154,7 @@ var dateFormat = require('dateformat');
 // 產生訂單
 router.post('/sendorder', async function (req, res) {
 
-  var time = dateFormat(new Date(), "yyyy/mm/dd hh:MM:ss").toString();
+  var time = dateFormat(new Date(), "yyyy/mm/dd hh:MM:ss");
 
   console.log("\n\n");
   console.log(time + " 接收到了一筆新的訂單!");
@@ -168,7 +168,7 @@ router.post('/sendorder', async function (req, res) {
 
   let base_param = {
     MerchantTradeNo: orderID.toString(),
-    MerchantTradeDate: '2017/02/13 15:45:30',
+    MerchantTradeDate: time.toString(),
     TotalAmount: '100',
     TradeDesc: '商品描述',
     ItemName: '飾品',
