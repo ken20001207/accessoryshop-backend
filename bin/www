@@ -6,7 +6,7 @@
 
 var app = require('../app');
 var debug = require('debug')('accessoryshop-b:server');
-var http = require('http');
+var https = require('https');
 var fs = require('fs');
 
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/sgp.vt.linyuanlin.com/privkey.pem', 'utf8');
@@ -28,7 +28,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = https.createServer(credentials, app);
 
 /**
  * Listen on provided port, on all network interfaces.
