@@ -167,7 +167,7 @@ router.post('/sendorder', async function (req, res) {
   let orderData = await generateOrderData(req.body);
 
   let base_param = {
-    MerchantTradeNo: 'f0a0d7e9fae1bb72bc93',
+    MerchantTradeNo: orderID.toString(),
     MerchantTradeDate: '2017/02/13 15:45:30',
     TotalAmount: '100',
     TradeDesc: '商品描述',
