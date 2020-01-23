@@ -141,7 +141,7 @@ function generateOrderData(shoppingCartData) {
     // 找到運費並加入總金額
     for (i = 0; i < config.deliveryWay.length; i++) {
       if (config.deliveryWay[i].name == shoppingCartData.delivery.way) {
-        console.log("運送方式為 " + config.deliveryWay[i].name + " 需要運費 " + config.deliveryWay[i].price + " 元");
+        console.log("運送方式為 " + config.deliveryWay[i].name + " 需要運費 " + config.deliveryWay[i].price + " 元\n\n");
         sumprice += config.deliveryWay[i].price;
         break;
       }
@@ -210,10 +210,21 @@ router.get('/order/:id', function (req, res) {
 
 });
 
+/** 更新訂單狀態 */
+function updatePayResult(id, result) {
+  return new Promise(function(resolve, reject) {
+    connection.query("UPDATE `orders` SET `payresult` = \'" + result + "\' WHERE `id`=" + id, err => {
+      if (err) reject(err);
+      else resolve();
+    })
+  }) 
+}
+
 // 收到付款完成的通知
 router.post('/paycomplete', function (req, res) {
   console.log("收到訂單付款完成的通知!");
-  console.log(req.body);
+  console.log("訂單編號 " + req.body.MerchantTradeNo + " 狀態更新為 " + req.body.RtnMsg);
+  await updatePayResult(req.body.MerchantTradeNo, req.body.RtnMsg);
   res.status(200).write(("1|OK").toString());
   res.end();
 })
