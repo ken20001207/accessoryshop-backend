@@ -8,6 +8,14 @@ var app = require('../app');
 var debug = require('debug')('accessoryshop-b:server');
 var http = require('http');
 
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/sgp.vt.linyuanlin.com/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/sgp.vt.linyuanlin.com/fullchain.pem', 'utf8');
+const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: certificate
+};
+
 /**
  * Get port from environment and store in Express.
  */
