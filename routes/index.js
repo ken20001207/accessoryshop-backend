@@ -154,7 +154,7 @@ var dateFormat = require('dateformat');
 // 產生訂單
 router.post('/sendorder', async function (req, res) {
 
-  var time = dateFormat(new Date(), "yyyy/mm/dd hh:MM:ss");
+  var time = dateFormat(new Date(), "yyyy/mm/dd hh:MM:ss").toString();
 
   console.log("\n\n");
   console.log(time + " 接收到了一筆新的訂單!");
@@ -167,7 +167,7 @@ router.post('/sendorder', async function (req, res) {
   let orderData = await generateOrderData(req.body);
 
   let base_param = {
-    MerchantTradeNo: orderID,
+    MerchantTradeNo: orderID.toString(),
     MerchantTradeDate: time,
     TotalAmount: orderData.sumprice,
     TradeDesc: '交易編號 ' + orderID,
