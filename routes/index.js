@@ -27,8 +27,8 @@ var ecpay_payment = require('ECPAY_Payment_node_js');
 // 資料庫連線資訊
 var connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: 'root',
+  user: 'yuan',
+  password: 'Yuanlin1207!',
   database: 'accessoryshop'
 });
 
