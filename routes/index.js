@@ -185,7 +185,7 @@ router.post('/sendorder', async function (req, res) {
   let orderData = await generateOrderData(req.body);
 
   let base_param = {
-    ClientBackURL: 'http://localhost:8080/order/' + orderID,
+    ClientBackURL: 'http://sgp.vt.linyuanlin.com/#/order/' + orderID + '/',
     MerchantTradeNo: orderID.toString(),
     MerchantTradeDate: time.toString(),
     TotalAmount: orderData.sumprice.toString(),
