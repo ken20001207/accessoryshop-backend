@@ -64,6 +64,24 @@ router.get('/itemsbyclass/:class', function (req, res) {
 
 });
 
+// 請求商品類別清單
+router.get('/classes', function (req, res) {
+
+  connection.query('SELECT * FROM `classes`', function (error, results) {
+
+    if (error) throw error;
+
+    res.status(200);
+    var objs = [];
+    for (var i = 0; i < results.length; i++) {
+      objs.push(JSON.stringify(results[i]));
+    }
+    res.send(JSON.parse(JSON.stringify(objs)));
+    res.end();
+  });
+
+});
+
 // 請求商品
 router.get('/item/:id', function (req, res) {
 
