@@ -1,6 +1,6 @@
 
 /** 更新訂單寄送資訊 */
-exports.updateDelivery = function updateDelivery(id, delivery, delivery_info) {
+exports.updateDelivery = function updateDelivery(id, delivery, delivery_info, connection) {
     return new Promise(function (resolve, reject) {
         connection.query("UPDATE `orders` SET `delivery` = \'" + delivery + "\' , `delivery_info`=\'" + delivery_info + "\' WHERE `id`=" + id, err => {
             if (err) reject(err);
@@ -10,7 +10,7 @@ exports.updateDelivery = function updateDelivery(id, delivery, delivery_info) {
 },
 
 /** 更新訂單狀態 */
-exports.updatePayResult = function updatePayResult(id, result) {
+exports.updatePayResult = function updatePayResult(id, result, connection) {
     return new Promise(function (resolve, reject) {
         connection.query("UPDATE `orders` SET `payresult` = \'" + result + "\' WHERE `id`=" + id, err => {
             if (err) reject(err);
@@ -49,7 +49,7 @@ exports.generateOrderData = function generateOrderData(shoppingCartData) {
 },
 
 /** 用商品編號取得商品當前售價 */
-exports.getItemPrice = function getItemPrice(id) {
+exports.getItemPrice = function getItemPrice(id, connection) {
     return new Promise(function (resolve, reject) {
         connection.query('SELECT * FROM `items` WHERE `id`= ' + id, function (error, results) {
             if (error) reject(error);
@@ -59,7 +59,7 @@ exports.getItemPrice = function getItemPrice(id) {
 },
 
 /** 產生訂單編號 */
-exports.generateOrderID = function generateOrderID() {
+exports.generateOrderID = function generateOrderID(connection) {
     return new Promise(function (resolve, reject) {
         var orderID = Math.floor(Math.random() * 100000000000);
         connection.query('SELECT * FROM `orders` WHERE `id`=' + orderID, function (error, results) {

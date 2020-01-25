@@ -102,11 +102,11 @@ router.post('/sendorder', async function (req, res) {
   console.log(time + " 接收到了一筆新的訂單!");
 
   // 生成訂單編號
-  let orderID = await M.generateOrderID();
+  let orderID = await M.generateOrderID(connection);
   console.log("生成訂單編號 " + orderID);
 
   // 構造訂單資料
-  let orderData = await M.generateOrderData(req.body);
+  let orderData = await M.generateOrderData(req.body, connection);
 
   let base_param = {
     ClientBackURL: 'https://demoshop.linyuanlin.com/#/order/' + orderID + '/',
@@ -155,7 +155,7 @@ router.get('/order/:id', function (req, res) {
 router.post('/paycomplete', async function (req, res) {
   console.log("收到訂單付款完成的通知!");
   console.log("訂單編號 " + req.body.MerchantTradeNo + " 狀態更新為 " + req.body.RtnMsg);
-  await M.updatePayResult(req.body.MerchantTradeNo, req.body.RtnMsg);
+  await M.updatePayResult(req.body.MerchantTradeNo, req.body.RtnMsg, connection);
   res.status(200).write(("1|OK").toString());
   res.end();
 })
@@ -165,7 +165,7 @@ router.post('/updateDelivery', async function (req, res) {
 
   console.log("\n\n");
   console.log("訂單編號 " + req.body.id + " 更新了他的寄送資訊: ");
-  M.updateDelivery(req.body.id, req.body.delivery, req.body.delivery_info);
+  M.updateDelivery(req.body.id, req.body.delivery, req.body.delivery_info, connection);
   console.log("寄送方式為 " + req.body.delivery + " , 寄送到 " + req.body.delivery_info);
   res.status(200);
   res.end();
