@@ -95,8 +95,10 @@ router.get('/class/:id', function (req, res) {
 var dateFormat = require('dateformat');
 // 產生訂單
 router.post('/sendorder', async function (req, res) {
-
-  var time = dateFormat(new Date(), "yyyy/mm/dd hh:MM:ss");
+  
+  var date = new Date();
+  date.setUTCHours(date.getHours() + 8);
+  var time = dateFormat(date, "yyyy/mm/dd hh:MM:ss");
 
   console.log("\n\n");
   console.log(time + " 接收到了一筆新的訂單!");
