@@ -1,3 +1,4 @@
+import config from './config';
 
 /** 更新訂單寄送資訊 */
 function updateDelivery(id, delivery, delivery_info, connection) {
