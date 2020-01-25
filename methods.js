@@ -1,26 +1,28 @@
 
 /** 更新訂單寄送資訊 */
-exports.updateDelivery = function updateDelivery(id, delivery, delivery_info, connection) {
+function updateDelivery(id, delivery, delivery_info, connection) {
     return new Promise(function (resolve, reject) {
         connection.query("UPDATE `orders` SET `delivery` = \'" + delivery + "\' , `delivery_info`=\'" + delivery_info + "\' WHERE `id`=" + id, err => {
             if (err) reject(err);
             else resolve();
         })
     })
-},
+}
+exports.updateDelivery = updateDelivery;
 
 /** 更新訂單狀態 */
-exports.updatePayResult = function updatePayResult(id, result, connection) {
+function updatePayResult(id, result, connection) {
     return new Promise(function (resolve, reject) {
         connection.query("UPDATE `orders` SET `payresult` = \'" + result + "\' WHERE `id`=" + id, err => {
             if (err) reject(err);
             else resolve();
         })
     })
-},
+}
+exports.updatePayResult = updatePayResult;
 
 /** 用購物車資料生成訂單資料 */
-exports.generateOrderData = function generateOrderData(shoppingCartData) {
+function generateOrderData(shoppingCartData) {
     return new Promise(async function (resolve) {
         var orderData = [];
         var sumprice = 0;
@@ -46,20 +48,22 @@ exports.generateOrderData = function generateOrderData(shoppingCartData) {
 
         resolve({ orderData: orderData, sumprice: sumprice });
     })
-},
+}
+exports.generateOrderData = generateOrderData;
 
 /** 用商品編號取得商品當前售價 */
-exports.getItemPrice = function getItemPrice(id, connection) {
+function getItemPrice(id, connection) {
     return new Promise(function (resolve, reject) {
         connection.query('SELECT * FROM `items` WHERE `id`= ' + id, function (error, results) {
             if (error) reject(error);
             else resolve(results[0].price);
         })
     })
-},
+}
+exports.getItemPrice = getItemPrice;
 
 /** 產生訂單編號 */
-exports.generateOrderID = function generateOrderID(connection) {
+function generateOrderID(connection) {
     return new Promise(function (resolve, reject) {
         var orderID = Math.floor(Math.random() * 100000000000);
         connection.query('SELECT * FROM `orders` WHERE `id`=' + orderID, function (error, results) {
@@ -77,3 +81,4 @@ exports.generateOrderID = function generateOrderID(connection) {
         });
     })
 }
+exports.generateOrderID = generateOrderID;
