@@ -22,7 +22,7 @@ function updatePayResult(id, result, connection) {
 exports.updatePayResult = updatePayResult;
 
 /** 用購物車資料生成訂單資料 */
-function generateOrderData(shoppingCartData) {
+function generateOrderData(shoppingCartData, connection) {
     return new Promise(async function (resolve) {
         var orderData = [];
         var sumprice = 0;
@@ -30,7 +30,7 @@ function generateOrderData(shoppingCartData) {
         // 檢查每一個商品的當前價格並加總
         for (var i = 0; i < shoppingCartData.items.length; i++) {
             var item = shoppingCartData.items[i];
-            let price = await getItemPrice(item.id);
+            let price = await getItemPrice(item.id, connection);
             item.price = price;
             console.log(item.num + " 個 " + item.name + " (規格: " + item.option + ") 單價為 " + item.price + "元, 合計 " + item.price * item.num + "元");
             sumprice += item.price * item.num;
