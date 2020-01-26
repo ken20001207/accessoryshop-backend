@@ -108,6 +108,7 @@ exports.checkCouponCode = checkCouponCode;
 function updateCouponCode(connection, couponCode) {
     return new Promise(function (resolve, reject) {
         connection.query('UPDATE `coupons` SET `available` = 0 WHERE `id` = \'' + couponCode + '\'' , function(err) {
+            console.log('UPDATE `coupons` SET `available` = 0 WHERE `id` = \'' + couponCode + '\'')
             if(err) reject(err);
             else resolve();
         })
