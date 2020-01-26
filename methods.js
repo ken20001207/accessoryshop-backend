@@ -92,7 +92,7 @@ function checkCouponCode(connection, couponCode) {
             if(results.length == 0) {
                 resolve("none");
             } else {
-                await updateCouponCode(connection, couponCode);
+                updateCouponCode(connection, couponCode);
                 resolve({
                     percentOFF: results[0].percentOFF,
                     discount: results[0].discount,
