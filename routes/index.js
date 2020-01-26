@@ -120,9 +120,11 @@ router.post('/sendorder', async function (req, res) {
 
   // 構造訂單資料
   let orderData = await M.generateOrderData(req.body, connection);
-
+  
+  // 計算折扣後的金額
   orderData.sumprice = orderData.sumprice - discount;
   orderData.sumprice = orderData.sumprice * (1 - percentOFF);
+  orderData.sumprice = parseInt(orderData.sumprice);
 
   let base_param = {
     ClientBackURL: 'https://demoshop.linyuanlin.com/#/order/' + orderID + '/',
