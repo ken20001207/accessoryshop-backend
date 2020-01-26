@@ -103,7 +103,7 @@ router.post('/sendorder', async function (req, res) {
 
   // 檢查優惠代碼
   console.log("該訂單使用了優惠代碼 " + req.body.couponCode);
-  let couponData = await M.checkCouponCode(connection, req.body.couponData);
+  let couponData = await M.checkCouponCode(connection, req.body.couponCode);
   console.log(couponData);
   var discount = 0;
   var percentOFF = 0;
