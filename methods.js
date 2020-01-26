@@ -3,12 +3,10 @@ let config = require('./config');
 /** 更新訂單寄送資訊 */
 function updateDelivery(id, delivery, delivery_info, connection) {
     return new Promise(function (resolve, reject) {
-        connection.connect();
         connection.query("UPDATE `orders` SET `delivery` = \'" + delivery + "\' , `delivery_info`=\'" + delivery_info + "\' WHERE `id`=" + id, err => {
             if (err) reject(err);
             else resolve();
         })
-        connection.end();
     })
 }
 exports.updateDelivery = updateDelivery;
@@ -16,12 +14,10 @@ exports.updateDelivery = updateDelivery;
 /** 更新訂單狀態 */
 function updatePayResult(id, result, connection) {
     return new Promise(function (resolve, reject) {
-        connection.connect();
         connection.query("UPDATE `orders` SET `payresult` = \'" + result + "\' WHERE `id`=" + id, err => {
             if (err) reject(err);
             else resolve();
         });
-        connection.end();
     })
 }
 exports.updatePayResult = updatePayResult;
@@ -59,12 +55,10 @@ exports.generateOrderData = generateOrderData;
 /** 用商品編號取得商品當前售價 */
 function getItemPrice(id, connection) {
     return new Promise(function (resolve, reject) {
-        connection.connect();
         connection.query('SELECT * FROM `items` WHERE `id`= ' + id, function (error, results) {
             if (error) reject(error);
             else resolve(results[0].price);
         })
-        connection.end();
     })
 }
 exports.getItemPrice = getItemPrice;
@@ -73,7 +67,6 @@ exports.getItemPrice = getItemPrice;
 function generateOrderID(connection) {
     return new Promise(function (resolve, reject) {
         var orderID = Math.floor(Math.random() * 100000000000);
-        connection.connect();
         connection.query('SELECT * FROM `orders` WHERE `id`=' + orderID, function (error, results) {
 
             if (error) reject(error);
@@ -87,7 +80,23 @@ function generateOrderID(connection) {
             }
 
         });
-        connection.end();
     })
 }
 exports.generateOrderID = generateOrderID;
+
+/** 檢查優惠代碼 */
+function checkCouponCode(connection, couponCode) {
+    return new Promise(function (resolve, reject) {
+        connection.query('SELECT * FROM `coupons` WHERE `id`=\'' + couponCode + '\' AND `available` = 1', function(err, results) {
+            if(results.length == 0) {
+                resolve("none");
+            } else {
+                resolve({
+                    percentOFF: results[0].percentOFF,
+                    discount: results[0].discount
+                });
+            }
+        })
+    })
+}
+exports.checkCouponCode = checkCouponCode;
