@@ -14,8 +14,6 @@ var connection = mysql.createConnection({
   database: 'accessoryshop'
 });
 
-connection.connect();
-
 // 取得當前的主打商品類別
 router.get('/flagclass', function (req, res) {
   res.status(200).write((config.flagclass).toString());
