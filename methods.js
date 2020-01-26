@@ -88,15 +88,29 @@ exports.generateOrderID = generateOrderID;
 function checkCouponCode(connection, couponCode) {
     return new Promise(function (resolve, reject) {
         connection.query('SELECT * FROM `coupons` WHERE `id`=\'' + couponCode + '\' AND `available` = 1', function(err, results) {
+            if(err) reject(err);
             if(results.length == 0) {
                 resolve("none");
             } else {
+                await updateCouponCode(connection, couponCode);
                 resolve({
                     percentOFF: results[0].percentOFF,
-                    discount: results[0].discount
+                    discount: results[0].discount,
+                    id: couponCode
                 });
             }
         })
     })
 }
 exports.checkCouponCode = checkCouponCode;
+
+/** 更新優惠代碼狀態 */
+function updateCouponCode(connection, couponCode) {
+    return new Promise(function (resolve, reject) {
+        connection.query('UPDATE `coupons` SET `available` = 0 WHERE `couponCode` = \'' + couponCode + '\'' , function(err) {
+            if(err) reject(err);
+            else resolve();
+        })
+    })
+}
+exports.updateCouponCode = updateCouponCode;

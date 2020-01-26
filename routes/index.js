@@ -93,7 +93,7 @@ router.get('/class/:id', function (req, res) {
 var dateFormat = require('dateformat');
 // 產生訂單
 router.post('/sendorder', async function (req, res) {
-  
+
   var date = new Date();
   date.setUTCHours(date.getHours() + 8);
   var time = dateFormat(date, "yyyy/mm/dd hh:MM:ss");
@@ -101,12 +101,27 @@ router.post('/sendorder', async function (req, res) {
   console.log("\n\n");
   console.log(time + " 接收到了一筆新的訂單!");
 
+  // 檢查優惠代碼
+  let couponData = await M.checkCouponCode(connection, req.body.couponData);
+  var discount = 0;
+  var percentOFF = 0;
+  if (couponData != "none") {
+    discount = couponData.discount;
+    percentOFF = couponData.percentOFF;
+    console.log("該訂單使用了優惠代碼 " + req.body.couponCode + ", 獲得了商品金額 NT$ " + discount + " 減免以及 " + percentOFF + "% 減免")
+  } else {
+    couponData = {};
+  }
+
   // 生成訂單編號
   let orderID = await M.generateOrderID(connection);
   console.log("生成訂單編號 " + orderID);
 
   // 構造訂單資料
   let orderData = await M.generateOrderData(req.body, connection);
+
+  orderData.sumprice = orderData.sumprice - discount;
+  orderData.sumprice = orderData.sumprice * (1 - percentOFF);
 
   let base_param = {
     ClientBackURL: 'https://demoshop.linyuanlin.com/#/order/' + orderID + '/',
@@ -122,10 +137,10 @@ router.post('/sendorder', async function (req, res) {
   let htm = await create.payment_client.aio_check_out_all(parameters = base_param, invoice = {});
 
   // 上傳到資料庫
-  connection.query('INSERT INTO `orders` (`id`,`data`,`sumprice`,`statusCode`,`delivery`,`payform`) VALUES (\'' + orderID + '\' , \'' + JSON.stringify(orderData.orderData) + '\', \'' + orderData.sumprice + '\',1,\'' + JSON.stringify(req.body.delivery) + '\',\'' + htm + '\');');
+  connection.query('INSERT INTO `orders` (`id`,`data`,`sumprice`,`statusCode`,`delivery`,`payform`, `couponData`) VALUES (\'' + orderID + '\' , \'' + JSON.stringify(orderData.orderData) + '\', \'' + orderData.sumprice + '\',1,\'' + JSON.stringify(req.body.delivery) + '\',\'' + htm + '\', \'' + JSON.stringify(couponData) + '\');');
 
   res.status(200);
-  res.send({ orderID: orderID.toString(), payform: htm });
+  res.send({ orderID: orderID.toString(), payform: htm, couponData: couponData });
   res.end();
 })
 
