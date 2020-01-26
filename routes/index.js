@@ -140,7 +140,7 @@ router.post('/sendorder', async function (req, res) {
   connection.query('INSERT INTO `orders` (`id`,`data`,`sumprice`,`statusCode`,`delivery`,`payform`, `couponData`) VALUES (\'' + orderID + '\' , \'' + JSON.stringify(orderData.orderData) + '\', \'' + orderData.sumprice + '\',1,\'' + JSON.stringify(req.body.delivery) + '\',\'' + htm + '\', \'' + JSON.stringify(couponData) + '\');');
 
   res.status(200);
-  res.send({ orderID: orderID.toString(), payform: htm, couponData: couponData });
+  res.send({ orderID: orderID.toString(), payform: htm, couponData: couponData, orderData: orderData });
   res.end();
 })
 
