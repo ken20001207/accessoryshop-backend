@@ -102,13 +102,14 @@ router.post('/sendorder', async function (req, res) {
   console.log(time + " 接收到了一筆新的訂單!");
 
   // 檢查優惠代碼
+  console.log("該訂單使用了優惠代碼 " + req.body.couponCode);
   let couponData = await M.checkCouponCode(connection, req.body.couponData);
   var discount = 0;
   var percentOFF = 0;
   if (couponData != "none") {
     discount = couponData.discount;
     percentOFF = couponData.percentOFF;
-    console.log("該訂單使用了優惠代碼 " + req.body.couponCode + ", 獲得了商品金額 NT$ " + discount + " 減免以及 " + percentOFF + "% 減免")
+    console.log("該優惠代碼獲得了商品金額 NT$ " + discount + " 減免以及 " + percentOFF + "% 減免")
   } else {
     couponData = {};
   }
