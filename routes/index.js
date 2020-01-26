@@ -110,7 +110,7 @@ router.post('/sendorder', async function (req, res) {
   if (couponData != "none") {
     discount = couponData.discount;
     percentOFF = couponData.percentOFF;
-    console.log("該優惠代碼獲得了商品金額 NT$ " + discount + " 減免以及 " + percentOFF + "% 減免")
+    console.log("該優惠代碼獲得了商品金額 NT$ " + discount + " 減免以及 " + (percentOFF * 100) + "% 減免")
   } else {
     couponData = {};
   }

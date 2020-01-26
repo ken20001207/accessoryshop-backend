@@ -107,7 +107,7 @@ exports.checkCouponCode = checkCouponCode;
 /** 更新優惠代碼狀態 */
 function updateCouponCode(connection, couponCode) {
     return new Promise(function (resolve, reject) {
-        connection.query('UPDATE `coupons` SET `available` = 0 WHERE `couponCode` = \'' + couponCode + '\'' , function(err) {
+        connection.query('UPDATE `coupons` SET `available` = 0 WHERE `id` = \'' + couponCode + '\'' , function(err) {
             if(err) reject(err);
             else resolve();
         })
